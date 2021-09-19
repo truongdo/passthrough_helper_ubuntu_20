@@ -3,12 +3,12 @@
 #Making sure this script runs with elevated privileges
 if [ $EUID -ne 0 ]
 	then
-		echo "Please run this as root!" 
+		echo "Please run this as root!"
 		exit 1
 fi
 
 if [ -a /etc/initramfs-tools/scripts/init-top/vfio-pci-override-vga.sh ]
-	then 
+	then
 	echo "Please uninstall Passthrough Helper first! Then run gpu_passthrough.sh again."
 	exit
 fi
@@ -18,7 +18,7 @@ VIRT_USER=`logname`
 apt install qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager ovmf
 
 
-#Creating a GRUB variable equal to current content of grub cmdline. 
+#Creating a GRUB variable equal to current content of grub cmdline.
 GRUB=`cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX_DEFAULT" | rev | cut -c 2- | rev`
 
 
@@ -52,21 +52,21 @@ OLD_OPTIONS=`cat /etc/default/grub | grep GRUB_CMDLINE_LINUX_DEFAULT | cut -d '"
 NEW_OPTIONS="$OLD_OPTIONS $IOMMU\""
 echo $NEW_OPTIONS
 
-#Rebuilding grub 
+#Rebuilding grub
 sed -i -e "s|^GRUB_CMDLINE_LINUX_DEFAULT.*|${NEW_OPTIONS}|" /etc/default/grub
 
-#User verification of new grub and prompt to manually edit it
-echo 
-echo "Grub was modified to look like this: "
-echo `cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX_DEFAULT"`
-echo 
-echo "Do you want to edit it? y/n"
-read YN
+##User verification of new grub and prompt to manually edit it
+#echo
+#echo "Grub was modified to look like this: "
+#echo `cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX_DEFAULT"`
+#echo
+#echo "Do you want to edit it? y/n"
+#read YN
 
-if [ $YN = y ]
-then
-nano /etc/default/grub
-fi
+#if [ $YN = y ]
+#then
+#nano /etc/default/grub
+#fi
 
 
 #Updating grub
